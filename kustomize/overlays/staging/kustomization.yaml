@@ -56,8 +56,6 @@ configMapGenerator:
   - DB_LOCAL_CHARSET=utf8mb4
   - DB_LOCAL_COLLATION=utf8mb4_unicode_ci
 
-
-  - DB_SIGAA_DRIVER=mysql
   - DB_SIGAA_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
   - DB_SIGAA_PORT=3306
   - DB_SIGAA_DATABASE=unidatahub_stag
