@@ -32,6 +32,10 @@ patches:
     kind: Service
     name: mariadb-lb
 
+
+
+
+
 configMapGenerator:
 - behavior: merge
   literals:
@@ -55,15 +59,12 @@ configMapGenerator:
   - DB_DATABASE=unidatahub_stag
   - DB_LOCAL_CHARSET=utf8mb4
   - DB_LOCAL_COLLATION=utf8mb4_unicode_ci
-
   - DB_SIGAA_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
   - DB_SIGAA_PORT=3306
   - DB_SIGAA_DATABASE=unidatahub_stag
   - DB_SIGAA_USERNAME=root
   - DB_SIGAA_CHARSET=utf8mb4
   - DB_SIGAA_COLLATION=utf8mb4_unicode_ci
-
-
   - DB_SISTEMAS_COMUM_DRIVER=mysql
   - DB_SISTEMAS_COMUM_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
   - DB_SISTEMAS_COMUM_PORT=3306
@@ -71,7 +72,6 @@ configMapGenerator:
   - DB_SISTEMAS_COMUM_USERNAME=root
   - DB_SISTEMAS_COMUM_CHARSET=utf8mb4
   - DB_SISTEMAS_COMUM_COLLATION=utf8mb4_unicode_ci
-
   - MYSQL_DATABASE=unidatahub_stag
   - MYSQL_USER=unidatahub_stag_user
   - MARIADB_CLUSTER_NAME=unidatahub_stag_galera_cluster
@@ -81,7 +81,7 @@ configMapGenerator:
 
 images:
 - name: harbor.unilab.edu.br/unilab/unidatahub
-  newTag: stg-b8c5a8e2
+  newTag: stg-7dd975a3
 
 labels:
 - pairs:
