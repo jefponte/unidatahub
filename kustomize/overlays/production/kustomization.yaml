@@ -50,16 +50,10 @@ configMapGenerator:
   literals:
   - DB_HOST=mariadb-app.unidatahub-prd.svc.cluster.local
   - DB_DATABASE=unidatahub_prod
-
   - DB_LOCAL_DRIVER=mysql
-  - DB_HOST=mariadb-app.unidatahub-prd.svc.cluster.local
   - DB_LOCAL_PORT=3306
-  - DB_SIGAA_DRIVER=mysql
-  - DB_DATABASE=unidatahub_prod
   - DB_LOCAL_CHARSET=utf8mb4
   - DB_LOCAL_COLLATION=utf8mb4_unicode_ci
-
-
   - DB_SIGAA_DRIVER=mysql
   - DB_SIGAA_HOST=mariadb-app.unidatahub-prd.svc.cluster.local
   - DB_SIGAA_PORT=3306
@@ -67,8 +61,6 @@ configMapGenerator:
   - DB_SIGAA_USERNAME=root
   - DB_SIGAA_CHARSET=utf8mb4
   - DB_SIGAA_COLLATION=utf8mb4_unicode_ci
-
-
   - DB_SISTEMAS_COMUM_DRIVER=mysql
   - DB_SISTEMAS_COMUM_HOST=mariadb-app.unidatahub-prd.svc.cluster.local
   - DB_SISTEMAS_COMUM_PORT=3306
@@ -76,12 +68,9 @@ configMapGenerator:
   - DB_SISTEMAS_COMUM_USERNAME=root
   - DB_SISTEMAS_COMUM_CHARSET=utf8mb4
   - DB_SISTEMAS_COMUM_COLLATION=utf8mb4_unicode_ci
-
   - MYSQL_DATABASE=unidatahub_prod
   - MYSQL_USER=unidatahub_prod_user
   - MARIADB_CLUSTER_NAME=unidatahub_prod_galera_cluster
-
-
   name: mariadb-env
   options:
     disableNameSuffixHash: true
