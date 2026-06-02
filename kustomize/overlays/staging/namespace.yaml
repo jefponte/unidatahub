@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: unidatahub-stg
+  labels:
+    name: unidatahub-stg
+    app: unidatahub
+    environment: staging
+    managed-by: kustomize
+    project: unidatahub

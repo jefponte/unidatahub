@@ -1,0 +1,93 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: unidatahub-stg
+
+resources:
+- ../../base
+- namespace.yaml
+- sealed-secret-mariadb-credentials.yaml
+- sealed-secret-laravel-secrets.yaml
+- sealed-secret-ext-db.yaml
+
+patches:
+- path: patch-deployment.yaml
+  target:
+    kind: Deployment
+    name: unidatahub
+- path: patch-ingress.yaml
+  target:
+    kind: Ingress
+    name: unidatahub
+- path: patch-hpa.yaml
+  target:
+    kind: HorizontalPodAutoscaler
+    name: unidatahub
+- path: mariadb/patch-statefulset.yaml
+  target:
+    kind: StatefulSet
+    name: mariadb
+- path: mariadb/patch-service-loadbalancer.yaml
+  target:
+    kind: Service
+    name: mariadb-lb
+
+configMapGenerator:
+- behavior: merge
+  literals:
+  - APP_NAME=Unidatahub - Staging
+  - APP_ENV=staging
+  - APP_DEBUG=false
+  - APP_URL=https://unidatahub-staging.unilab.edu.br
+  - MAIL_FROM_ADDRESS=noreply@unidatahub-staging.unilab.edu.br
+  - MAIL_FROM_NAME=[Treinamento] UNIDATAHUB - UNILAB
+  - LOG_LEVEL=info
+  - MESSAGE=Staging
+  name: unidatahub-config
+  options:
+    disableNameSuffixHash: true
+- behavior: merge
+  literals:
+  - DB_LOCAL_DRIVER=mysql
+  - DB_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
+  - DB_LOCAL_PORT=3306
+  - DB_SIGAA_DRIVER=mysql
+  - DB_DATABASE=unidatahub_stag
+  - DB_LOCAL_CHARSET=utf8mb4
+  - DB_LOCAL_COLLATION=utf8mb4_unicode_ci
+
+
+  - DB_SIGAA_DRIVER=mysql
+  - DB_SIGAA_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
+  - DB_SIGAA_PORT=3306
+  - DB_SIGAA_DATABASE=unidatahub_stag
+  - DB_SIGAA_USERNAME=root
+  - DB_SIGAA_CHARSET=utf8mb4
+  - DB_SIGAA_COLLATION=utf8mb4_unicode_ci
+
+
+  - DB_SISTEMAS_COMUM_DRIVER=mysql
+  - DB_SISTEMAS_COMUM_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
+  - DB_SISTEMAS_COMUM_PORT=3306
+  - DB_SISTEMAS_COMUM_DATABASE=unidatahub_stag
+  - DB_SISTEMAS_COMUM_USERNAME=root
+  - DB_SISTEMAS_COMUM_CHARSET=utf8mb4
+  - DB_SISTEMAS_COMUM_COLLATION=utf8mb4_unicode_ci
+
+  - MYSQL_DATABASE=unidatahub_stag
+  - MYSQL_USER=unidatahub_stag_user
+  - MARIADB_CLUSTER_NAME=unidatahub_stag_galera_cluster
+  name: mariadb-env
+  options:
+    disableNameSuffixHash: true
+
+images:
+- name: harbor.unilab.edu.br/unilab/unidatahub
+  newTag: stg-b8c5a8e2
+
+labels:
+- pairs:
+    environment: staging
+
+commonAnnotations:
+  description: Ambiente de homologação - UnidataHub
