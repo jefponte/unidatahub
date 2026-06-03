@@ -32,13 +32,12 @@ patches:
 configMapGenerator:
 - behavior: merge
   literals:
-  - APP_NAME=unidatahub - Development
+  - APP_NAME=UnidataHub - Development
   - APP_ENV=development
   - APP_DEBUG=true
   - APP_URL=https://unidatahub-development.unilab.edu.br
   - MAIL_FROM_ADDRESS=noreply@unidatahub-development.unilab.edu.br
-  - MAIL_FROM_NAME=[Development] Seleções - UNILAB
-  - WEB_APPLICATION_LINK=https://unidatahub-development.unilab.edu.br
+  - MAIL_FROM_NAME=[Development] UnidataHub
   - LOG_LEVEL=debug
   - MESSAGE=Development
   name: unidatahub-config
@@ -82,4 +81,4 @@ labels:
     environment: development
 
 commonAnnotations:
-  description: Ambiente de desenvolvimento - unidatahub Api
+  description: Ambiente de desenvolvimento - unidatahub

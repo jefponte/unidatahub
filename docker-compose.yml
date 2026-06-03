@@ -1,89 +1,99 @@
-version: '3.8'
-
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    image: unilab-api
-    container_name: unilab-api
-    ports:
-      - "8081:80"
+    container_name: unidatahub
+    restart: unless-stopped
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=unidatahub
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
     volumes:
       - .:/var/www/html
-      - storage-data:/var/www/html/storage
+    ports:
+      - "8083:80"
     networks:
-      - laravel-network
-    environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-      - APP_KEY=${APP_KEY}
-      - DB_CONNECTION=pgsql
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_DATABASE=unilab_unilab-api
-      - DB_USERNAME=unilab_unilab-api
-      - DB_PASSWORD=secret
+      - shared-network-unidatahub
 
-      - DB_LOCAL_DRIVER=pgsql
-      - DB_LOCAL_HOST=db
-      - DB_LOCAL_PORT=5432
-      - DB_LOCAL_DATABASE=unilab_unilab-api
-      - DB_LOCAL_USERNAME=unilab_unilab-api
-      - DB_LOCAL_PASSWORD=secret
-      - DB_LOCAL_CHARSET=utf8
-      - DB_LOCAL_SCHEMA=public
-      - DB_LOCAL_SSLMODE=prefer
-
-      - DB_SIGAA_DRIVER=pgsql
-      - DB_SIGAA_HOST=db
-      - DB_SIGAA_PORT=5432
-      - DB_SIGAA_DATABASE=unilab_unilab-api
-      - DB_SIGAA_USERNAME=unilab_unilab-api
-      - DB_SIGAA_PASSWORD=secret
-      - DB_SIGAA_CHARSET=utf8
-      - DB_SIGAA_SCHEMA=public
-      - DB_SIGAA_SSLMODE=prefer
-
-      - DB_SISTEMAS_COMUM_DRIVER=pgsql
-      - DB_SISTEMAS_COMUM_HOST=db
-      - DB_SISTEMAS_COMUM_PORT=5432
-      - DB_SISTEMAS_COMUM_DATABASE=unilab_unilab-api
-      - DB_SISTEMAS_COMUM_USERNAME=unilab_unilab-api
-      - DB_SISTEMAS_COMUM_PASSWORD=secret
-      - DB_SISTEMAS_COMUM_CHARSET=utf8
-      - DB_SISTEMAS_COMUM_SCHEMA=public
-      - DB_SISTEMAS_COMUM_SSLMODE=prefer
   db:
-    image: postgres:13
-    container_name: postgres
+    image: mysql:8.0
+    container_name: unidatahub-db
+    restart: unless-stopped
     ports:
-      - "5435:5432"
+      - "3307:3306"
     environment:
-      POSTGRES_DB: unilab_unilab-api
-      POSTGRES_USER: unilab_unilab-api
-      POSTGRES_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: unidatahub
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - dbdata:/var/lib/mysql
     networks:
-      - laravel-network
+      - shared-network-unidatahub
 
-  pgadmin2:
-    image: dpage/pgadmin4
-    container_name: pgadmin2
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: unidatahub-phpmyadmin
+    restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
     ports:
-      - "8089:80"
+      - "8081:80"
     networks:
-      - laravel-network
+      - shared-network-unidatahub
+
+  redis:
+    image: bitnami/redis:latest
+    restart: unless-stopped
+    container_name: unidatahub-redis
+    volumes:
+      - ./docker/redis:/bitnami/redis/data
+    networks:
+      - shared-network-unidatahub
+    environment:
+      - ALLOW_EMPTY_PASSWORD=no
+      - REDIS_PASSWORD=root
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: unidatahub.worker
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - redis
+      - db
+    networks:
+      - shared-network-unidatahub
+    command: "php artisan queue:work redis --tries=3 --verbose"
+
+  # For development and testing
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: unidatahub-mailpit
+    restart: unless-stopped
+    volumes:
+      - ./docker/mailplit:/data
+    ports:
+      - 1025:1025
+      - 8025:8025
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    networks:
+      - shared-network-unidatahub
 
 networks:
-  laravel-network:
-    driver: bridge
+  shared-network-unidatahub:
+    external: true
 
 volumes:
-  postgres-data:
-  storage-data:
+  dbdata:

@@ -35,12 +35,12 @@ patches:
 configMapGenerator:
 - behavior: merge
   literals:
-  - APP_NAME=Unidatahub - Staging
+  - APP_NAME=UnidataHub
   - APP_ENV=staging
   - APP_DEBUG=false
   - APP_URL=https://unidatahub-staging.unilab.edu.br
   - MAIL_FROM_ADDRESS=noreply@unidatahub-staging.unilab.edu.br
-  - MAIL_FROM_NAME=[Treinamento] UNIDATAHUB - UNILAB
+  - MAIL_FROM_NAME=[Treinamento] UidataHub - UNILAB
   - LOG_LEVEL=info
   - MESSAGE=Staging
   name: unidatahub-config
@@ -48,33 +48,21 @@ configMapGenerator:
     disableNameSuffixHash: true
 - behavior: merge
   literals:
-  - DB_LOCAL_DRIVER=mysql
   - DB_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
-  - DB_LOCAL_PORT=3306
-  - DB_SIGAA_DRIVER=mysql
   - DB_DATABASE=unidatahub_stag
-  - DB_LOCAL_CHARSET=utf8mb4
-  - DB_LOCAL_COLLATION=utf8mb4_unicode_ci
-
-  - DB_SIGAA_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
-  - DB_SIGAA_PORT=3306
-  - DB_SIGAA_DATABASE=unidatahub_stag
-  - DB_SIGAA_USERNAME=root
-  - DB_SIGAA_CHARSET=utf8mb4
-  - DB_SIGAA_COLLATION=utf8mb4_unicode_ci
-
-
-  - DB_SISTEMAS_COMUM_DRIVER=mysql
-  - DB_SISTEMAS_COMUM_HOST=mariadb-app.unidatahub-stg.svc.cluster.local
-  - DB_SISTEMAS_COMUM_PORT=3306
-  - DB_SISTEMAS_COMUM_DATABASE=unidatahub_stag
-  - DB_SISTEMAS_COMUM_USERNAME=root
-  - DB_SISTEMAS_COMUM_CHARSET=utf8mb4
-  - DB_SISTEMAS_COMUM_COLLATION=utf8mb4_unicode_ci
-
   - MYSQL_DATABASE=unidatahub_stag
   - MYSQL_USER=unidatahub_stag_user
   - MARIADB_CLUSTER_NAME=unidatahub_stag_galera_cluster
+  - DB_SIGAA_DRIVER=pgsql
+  - DB_SIGAA_DATABASE=sigaa
+  - DB_SIGAA_HOST=10.180.1.10
+  - DB_SIGAA_PORT=5432
+  - DB_SIGAA_USERNAME=api_conn_sig
+  - DB_SISTEMAS_COMUM_DATABASE=sistemas_comum
+  - DB_SISTEMAS_COMUM_DRIVER=pgsql
+  - DB_SISTEMAS_COMUM_HOST=10.180.1.11
+  - DB_SISTEMAS_COMUM_PORT=5432
+  - DB_SISTEMAS_COMUM_USERNAME=api_conn_sig
   name: mariadb-env
   options:
     disableNameSuffixHash: true
