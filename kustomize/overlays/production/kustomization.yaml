@@ -50,27 +50,23 @@ configMapGenerator:
   literals:
   - DB_HOST=mariadb-app.unidatahub-prd.svc.cluster.local
   - DB_DATABASE=unidatahub_prod
+  - MYSQL_DATABASE=unidatahub_prod
+  - MYSQL_USER=unidatahub_prod_user
+  - MARIADB_CLUSTER_NAME=unidatahub_prod_galera_cluster
   - DB_LOCAL_DRIVER=mysql
   - DB_LOCAL_PORT=3306
   - DB_LOCAL_CHARSET=utf8mb4
   - DB_LOCAL_COLLATION=utf8mb4_unicode_ci
-  - DB_SIGAA_DRIVER=mysql
-  - DB_SIGAA_HOST=mariadb-app.unidatahub-prd.svc.cluster.local
-  - DB_SIGAA_PORT=3306
-  - DB_SIGAA_DATABASE=unidatahub_prod
-  - DB_SIGAA_USERNAME=root
-  - DB_SIGAA_CHARSET=utf8mb4
-  - DB_SIGAA_COLLATION=utf8mb4_unicode_ci
-  - DB_SISTEMAS_COMUM_DRIVER=mysql
-  - DB_SISTEMAS_COMUM_HOST=mariadb-app.unidatahub-prd.svc.cluster.local
-  - DB_SISTEMAS_COMUM_PORT=3306
-  - DB_SISTEMAS_COMUM_DATABASE=unidatahub_prod
-  - DB_SISTEMAS_COMUM_USERNAME=root
-  - DB_SISTEMAS_COMUM_CHARSET=utf8mb4
-  - DB_SISTEMAS_COMUM_COLLATION=utf8mb4_unicode_ci
-  - MYSQL_DATABASE=unidatahub_prod
-  - MYSQL_USER=unidatahub_prod_user
-  - MARIADB_CLUSTER_NAME=unidatahub_prod_galera_cluster
+  - DB_SIGAA_DRIVER=pgsql
+  - DB_SIGAA_DATABASE=sigaa
+  - DB_SIGAA_HOST=10.180.1.10
+  - DB_SIGAA_PORT=5432
+  - DB_SIGAA_USERNAME=api_conn_sig
+  - DB_SISTEMAS_COMUM_DATABASE=sistemas_comum
+  - DB_SISTEMAS_COMUM_DRIVER=pgsql
+  - DB_SISTEMAS_COMUM_HOST=10.180.1.11
+  - DB_SISTEMAS_COMUM_PORT=5432
+  - DB_SISTEMAS_COMUM_USERNAME=api_conn_sig
   name: mariadb-env
   options:
     disableNameSuffixHash: true
