@@ -35,12 +35,12 @@ patches:
 configMapGenerator:
 - behavior: merge
   literals:
-  - APP_NAME=UNIDATAHUB
+  - APP_NAME=UnidataHub
   - APP_ENV=production
   - APP_DEBUG=false
   - APP_URL=https://unidatahub.unilab.edu.br
-  - MAIL_FROM_ADDRESS=noreply@unidatahub.unilab.edu.br
-  - MAIL_FROM_NAME=UNIDATAHUB
+  - MAIL_FROM_ADDRESS=noreply@selecoes.unilab.edu.br
+  - MAIL_FROM_NAME=UnidataHub
   - LOG_LEVEL=error
   - MESSAGE=Production
   name: unidatahub-config
@@ -80,4 +80,4 @@ labels:
     environment: production
 
 commonAnnotations:
-  description: Ambiente de produção - Unidatahub
+  description: Ambiente de produção - UnidataHub

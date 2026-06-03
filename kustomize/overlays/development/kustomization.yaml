@@ -81,4 +81,4 @@ labels:
     environment: development
 
 commonAnnotations:
-  description: Ambiente de desenvolvimento - unidatahub
+  description: Ambiente de desenvolvimento - UnidataHub

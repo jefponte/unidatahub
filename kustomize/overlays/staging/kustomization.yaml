@@ -32,19 +32,15 @@ patches:
     kind: Service
     name: mariadb-lb
 
-
-
-
-
 configMapGenerator:
 - behavior: merge
   literals:
-  - APP_NAME=UnidataHub
+  - APP_NAME=UnidataHub - Staging
   - APP_ENV=staging
   - APP_DEBUG=false
   - APP_URL=https://unidatahub-staging.unilab.edu.br
   - MAIL_FROM_ADDRESS=noreply@unidatahub-staging.unilab.edu.br
-  - MAIL_FROM_NAME=[Treinamento] UidataHub - UNILAB
+  - MAIL_FROM_NAME=[Treinamento] UnidataHub
   - LOG_LEVEL=info
   - MESSAGE=Staging
   name: unidatahub-config
@@ -57,6 +53,10 @@ configMapGenerator:
   - MYSQL_DATABASE=unidatahub_stag
   - MYSQL_USER=unidatahub_stag_user
   - MARIADB_CLUSTER_NAME=unidatahub_stag_galera_cluster
+  - DB_LOCAL_DRIVER=mysql
+  - DB_LOCAL_PORT=3306
+  - DB_LOCAL_CHARSET=utf8mb4
+  - DB_LOCAL_COLLATION=utf8mb4_unicode_ci
   - DB_SIGAA_DRIVER=pgsql
   - DB_SIGAA_DATABASE=sigaa
   - DB_SIGAA_HOST=10.180.1.10
@@ -73,7 +73,7 @@ configMapGenerator:
 
 images:
 - name: harbor.unilab.edu.br/unilab/unidatahub
-  newTag: stg-7dd975a3
+  newTag: stg-b8c5a8e2
 
 labels:
 - pairs:
