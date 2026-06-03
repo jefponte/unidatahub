@@ -32,6 +32,10 @@ patches:
     kind: Service
     name: mariadb-lb
 
+
+
+
+
 configMapGenerator:
 - behavior: merge
   literals:
@@ -69,7 +73,7 @@ configMapGenerator:
 
 images:
 - name: harbor.unilab.edu.br/unilab/unidatahub
-  newTag: stg-b8c5a8e2
+  newTag: stg-7dd975a3
 
 labels:
 - pairs:
