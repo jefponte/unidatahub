@@ -95,6 +95,7 @@ The API will be available at [http://localhost](http://localhost).
 
       docker exec -it unilab-api bash
 
+
 ## Notes
 
 - Ensure Docker and Docker Compose are installed and up to date.
