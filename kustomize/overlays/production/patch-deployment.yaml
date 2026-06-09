@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unidatahub-api
+spec:
+  template:
+    metadata:
+      labels:
+        environment: production
+    spec:
+      containers:
+        - name: unidatahub-api
+          resources:
+            requests:
+              cpu: 300m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi

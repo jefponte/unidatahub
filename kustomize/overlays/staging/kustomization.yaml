@@ -1,0 +1,68 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: unidatahub-api-stg
+
+resources:
+- ../../base
+- namespace.yaml
+- sealed-secret-mariadb-credentials.yaml
+- sealed-secret-laravel-secrets.yaml
+
+patches:
+- path: patch-deployment.yaml
+  target:
+    kind: Deployment
+    name: unidatahub-api
+- path: patch-ingress.yaml
+  target:
+    kind: Ingress
+    name: unidatahub-api
+- path: patch-hpa.yaml
+  target:
+    kind: HorizontalPodAutoscaler
+    name: unidatahub-api
+- path: mariadb/patch-statefulset.yaml
+  target:
+    kind: StatefulSet
+    name: mariadb
+- path: mariadb/patch-service-loadbalancer.yaml
+  target:
+    kind: Service
+    name: mariadb-lb
+
+configMapGenerator:
+- behavior: merge
+  literals:
+  - APP_NAME=unidatahub - Staging
+  - APP_ENV=staging
+  - APP_DEBUG=false
+  - APP_URL=https://unidatahub-staging.unilab.edu.br
+  - MAIL_FROM_ADDRESS=noreply@unidatahub-staging.unilab.edu.br
+  - MAIL_FROM_NAME=[Treinamento] Unidatahub - UNILAB
+  - LOG_LEVEL=info
+  - MESSAGE=Staging
+  name: unidatahub-api-config
+  options:
+    disableNameSuffixHash: true
+- behavior: merge
+  literals:
+  - DB_HOST=mariadb-app.unidatahub-api-stg.svc.cluster.local
+  - DB_DATABASE=unidatahub_stag
+  - MYSQL_DATABASE=unidatahub_stag
+  - MYSQL_USER=unidatahub_stag_user
+  - MARIADB_CLUSTER_NAME=unidatahub_stag_galera_cluster
+  name: mariadb-env
+  options:
+    disableNameSuffixHash: true
+
+images:
+- name: harbor.unilab.edu.br/unilab/unidatahub-api
+  newTag: stg-b8c5a8e2
+
+labels:
+- pairs:
+    environment: staging
+
+commonAnnotations:
+  description: Ambiente de homologação - UnidataHub

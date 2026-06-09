@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: unidatahub-api
+  labels:
+    name: unidatahub-api
+    app: unidatahub-api
+    environment: production
+    managed-by: kustomize
+    project: unidatahub
