@@ -1,19 +1,18 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Sigaa;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class VwUsuariosCatracaSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table('vw_usuarios_catraca')->insert([
+        DB::connection('sigaa')->table('vw_usuarios_autenticacao_catraca')->truncate();
+        DB::connection('sigaa')->table('vw_usuarios_catraca')->truncate();
+
+        DB::connection('sigaa')->table('vw_usuarios_catraca')->insert([
             [
                 'id_usuario' => 7072406,
                 'nome' => 'Servidor de Teste 1',
@@ -90,7 +89,7 @@ class VwUsuariosCatracaSeeder extends Seeder
             ],
         ]);
 
-        DB::table('vw_usuarios_autenticacao_catraca')->insert([
+        DB::connection('sigaa')->table('vw_usuarios_autenticacao_catraca')->insert([
             [
                 'id_usuario' => 7072406,
                 'nome' => 'Servidor de Teste 1',

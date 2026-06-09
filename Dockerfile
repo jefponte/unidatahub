@@ -1,4 +1,4 @@
-FROM php:8.2-apache as dev
+FROM php:8.3-apache as dev
 
 ENV APP_ENV=dev
 ENV APP_DEBUG=true
@@ -15,6 +15,15 @@ RUN { \
   echo "upload_max_filesize=5M"; \
   echo "post_max_size=6M"; \
   } > /usr/local/etc/php/conf.d/uploads.ini
+
+RUN { \
+  echo "[opcache]"; \
+  echo "opcache.enable=1"; \
+  echo "opcache.revalidate_freq=0"; \
+  echo "opcache.validate_timestamps=1"; \
+  echo "opcache.max_accelerated_files=10000"; \
+  echo "opcache.memory_consumption=192"; \
+  } > /usr/local/etc/php/conf.d/opcache.ini
 
 
 RUN apt-get update \
@@ -115,6 +124,8 @@ COPY --from=dev /var/www/html /var/www/html
 WORKDIR /var/www/html
 
 RUN composer install --prefer-dist --no-interaction --no-dev --no-scripts --optimize-autoloader \
+  && rm -f bootstrap/cache/services.php bootstrap/cache/packages.php \
+  && php artisan package:discover --ansi \
   && mkdir -p storage/framework/cache \
   && mkdir -p storage/framework/sessions \
   && mkdir -p storage/framework/views \
@@ -128,13 +139,13 @@ EXPOSE 80
 
 LABEL \
   org.opencontainers.image.vendor="UNILAB" \
-  org.opencontainers.image.title="Official 3S Docker image" \
-  org.opencontainers.image.description="3S (Sistema de Solicitação de Servicos) " \
+  org.opencontainers.image.title="Official UnidataHub Docker image" \
+  org.opencontainers.image.description="UnidataHub" \
   org.opencontainers.image.version="${VERSION}" \
-  org.opencontainers.image.url="https://3s.unilab.edu.br/" \
-  org.opencontainers.image.source="http://dti-gitlab.unilab.edu.br/disir/piloto-ci-cd-stack-devops-disir-dti.git" \
+  org.opencontainers.image.url="https://unidatahub.unilab.edu.br/" \
+  org.opencontainers.image.source="http://gitlab.unilab.edu.br/dti/unidatahub.git" \
   org.opencontainers.image.revision="${COMMIT_SHA}" \
   org.opencontainers.image.licenses="N/D" \
-  org.opencontainers.image.author="Jeff Ponte" \
+  org.opencontainers.image.author="Jefferson Ponte" \
   org.opencontainers.image.company="Universidade da Integracao Internacional da Lusofonia Afro-Brasileira (UNILAB)" \
-  org.opencontainers.image.maintainer="DTI/Unilab"
+  org.opencontainers.image.maintainer="CSI/Unilab"

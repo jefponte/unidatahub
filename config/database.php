@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Pdo\Mysql;
 
 return [
 
@@ -30,47 +31,7 @@ return [
     */
 
     'connections' => [
-        'local' => [
-            'driver' => env('DB_LOCAL_DRIVER', 'mysql'),
-            'host' => env('DB_LOCAL_HOST', '127.0.0.1'),
-            'port' => env('DB_LOCAL_PORT', '3306'),
-            'database' => env('DB_LOCAL_DATABASE', 'forge'),
-            'username' => env('DB_LOCAL_USERNAME', 'forge'),
-            'password' => env('DB_LOCAL_PASSWORD', ''),
-            'charset' => env('DB_LOCAL_CHARSET', 'utf8mb4'), // Compatível com MySQL e PostgreSQL
-            'collation' => env('DB_LOCAL_COLLATION', 'utf8mb4_unicode_ci'), // Específico para MySQL
-            'prefix' => '',
-            'schema' => env('DB_LOCAL_SCHEMA', 'public'), // Específico para PostgreSQL
-            'sslmode' => env('DB_LOCAL_SSLMODE', 'prefer'), // Específico para PostgreSQL
-        ],
 
-        'sigaa' => [
-            'driver' => env('DB_SIGAA_DRIVER', 'mysql'),
-            'host' => env('DB_SIGAA_HOST', '127.0.0.1'),
-            'port' => env('DB_SIGAA_PORT', '3306'),
-            'database' => env('DB_SIGAA_DATABASE', 'forge'),
-            'username' => env('DB_SIGAA_USERNAME', 'forge'),
-            'password' => env('DB_SIGAA_PASSWORD', ''),
-            'charset' => env('DB_SIGAA_CHARSET', 'utf8mb4'), // Compatível com MySQL e PostgreSQL
-            'collation' => env('DB_SIGAA_COLLATION', 'utf8mb4_unicode_ci'), // Específico para MySQL
-            'prefix' => '',
-            'schema' => env('DB_SIGAA_SCHEMA', 'public'), // Específico para PostgreSQL
-            'sslmode' => env('DB_SIGAA_SSLMODE', 'prefer'), // Específico para PostgreSQL
-        ],
-
-        'sistemas_comum' => [
-            'driver' => env('DB_SISTEMAS_COMUM_DRIVER', 'mysql'),
-            'host' => env('DB_SISTEMAS_COMUM_HOST', '127.0.0.1'),
-            'port' => env('DB_SISTEMAS_COMUM_PORT', '3306'),
-            'database' => env('DB_SISTEMAS_COMUM_DATABASE', 'forge'),
-            'username' => env('DB_SISTEMAS_COMUM_USERNAME', 'forge'),
-            'password' => env('DB_SISTEMAS_COMUM_PASSWORD', ''),
-            'charset' => env('DB_SISTEMAS_COMUM_CHARSET', 'utf8mb4'), // Compatível com MySQL e PostgreSQL
-            'collation' => env('DB_SISTEMAS_COMUM_COLLATION', 'utf8mb4_unicode_ci'), // Específico para MySQL
-            'prefix' => '',
-            'schema' => env('DB_SISTEMAS_COMUM_SCHEMA', 'public'), // Específico para PostgreSQL
-            'sslmode' => env('DB_SISTEMAS_COMUM_SSLMODE', 'prefer'), // Específico para PostgreSQL
-        ],
         'sqlite' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
@@ -80,6 +41,7 @@ return [
             'busy_timeout' => null,
             'journal_mode' => null,
             'synchronous' => null,
+            'transaction_mode' => 'DEFERRED',
         ],
 
         'mysql' => [
@@ -98,7 +60,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
@@ -118,10 +80,36 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
+        'sigaa' => [
+            'driver' => env('SIGAA_DB_CONNECTION', 'pgsql'),
+            'host' => env('SIGAA_DB_HOST'),
+            'port' => env('SIGAA_DB_PORT', '5432'),
+            'database' => env('SIGAA_DB_DATABASE'),
+            'username' => env('SIGAA_DB_USERNAME'),
+            'password' => env('SIGAA_DB_PASSWORD'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+        'sistemas_comum' => [
+            'driver' => env('SISTEMAS_COMUM_DB_CONNECTION', 'pgsql'),
+            'host' => env('SISTEMAS_COMUM_DB_HOST'),
+            'port' => env('SISTEMAS_COMUM_DB_PORT', '5432'),
+            'database' => env('SISTEMAS_COMUM_DB_DATABASE'),
+            'username' => env('SISTEMAS_COMUM_DB_USERNAME'),
+            'password' => env('SISTEMAS_COMUM_DB_PASSWORD'),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
@@ -134,7 +122,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => 'prefer',
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
         ],
 
         'sqlsrv' => [
@@ -187,7 +175,8 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
+            'persistent' => env('REDIS_PERSISTENT', false),
         ],
 
         'default' => [
@@ -197,6 +186,10 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
+            'max_retries' => env('REDIS_MAX_RETRIES', 3),
+            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
+            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
+            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
         ],
 
         'cache' => [
@@ -206,6 +199,10 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
+            'max_retries' => env('REDIS_MAX_RETRIES', 3),
+            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
+            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
+            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
         ],
 
     ],

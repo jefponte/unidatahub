@@ -21,7 +21,7 @@ In the `.env` file, configure the database connection settings:
     DB_LOCAL_DRIVER=mysql
     DB_LOCAL_HOST=172.23.112.1
     DB_LOCAL_PORT=3306
-    DB_LOCAL_DATABASE=unilab-api
+    DB_LOCAL_DATABASE=unidatahub
     DB_LOCAL_USERNAME=user
     DB_LOCAL_PASSWORD=secret
 
@@ -29,7 +29,7 @@ In the `.env` file, configure the database connection settings:
     DB_SIGAA_DRIVER=mysql
     DB_SIGAA_HOST=172.23.112.1
     DB_SIGAA_PORT=3306
-    DB_SIGAA_DATABASE=unilab-api
+    DB_SIGAA_DATABASE=unidatahub
     DB_SIGAA_USERNAME=user
     DB_SIGAA_PASSWORD=secret
 
@@ -37,7 +37,7 @@ In the `.env` file, configure the database connection settings:
     DB_SISTEMAS_COMUM_DRIVER=mysql
     DB_SISTEMAS_COMUM_HOST=172.23.112.1
     DB_SISTEMAS_COMUM_PORT=3306
-    DB_SISTEMAS_COMUM_DATABASE=unilab-api
+    DB_SISTEMAS_COMUM_DATABASE=unidatahub
     DB_SISTEMAS_COMUM_USERNAME=user
     DB_SISTEMAS_COMUM_PASSWORD=secret
 
@@ -56,25 +56,32 @@ This command will build the Docker image if needed and start the containers in t
 
 Run the following command to install dependencies using Composer:
 
-    docker exec -it unilab-api bash -c "composer install"
+    docker exec -it unidatahub bash -c "composer install"
 
 ### Step 4: Run Database Migrations
 
 With the environment up, run the migrations:
 
-    docker exec -it unilab-api bash -c "php artisan migrate"
+    docker exec -it unidatahub bash -c "php artisan migrate"
 
-    docker exec -it unilab-api bash -c "php artisan db:seed"
+    docker exec -it unidatahub bash -c "php artisan db:seed"
+
+
+### Step 5: Run Database SIGAA Migrations
+
+    docker exec unidatahub php artisan migrate --database=sigaa --path=database/migrations/sigaa
+
+    docker exec unidatahub php artisan db:seed --class="Database\Seeders\Sigaa\VwUsuariosCatracaSeeder"
 
 ### Step 5: Generate Application Key
 
 To secure the application, generate a new app key:
 
-    docker exec -it unilab-api bash -c "php artisan key:generate"
+    docker exec -it unidatahub bash -c "php artisan key:generate"
 
-    docker exec -it unilab-api bash -c "php artisan passport:keys"
+    docker exec -it unidatahub bash -c "php artisan passport:keys"
 
-    docker exec -it unilab-api bash -c "php artisan passport:client --client"
+    docker exec -it unidatahub bash -c "php artisan passport:client --client"
 
 
 ### Step 6: Access the Application
@@ -93,7 +100,7 @@ The API will be available at [http://localhost](http://localhost).
 
 - **Access the container**:
 
-      docker exec -it unilab-api bash
+      docker exec -it unidatahub bash
 
 
 ## Notes

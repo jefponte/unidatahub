@@ -6,17 +6,36 @@ services:
     container_name: unidatahub
     restart: unless-stopped
     environment:
+      - APP_ENV=local
       - DB_HOST=db
       - DB_PORT=3306
       - DB_DATABASE=unidatahub
       - DB_USERNAME=root
       - DB_PASSWORD=root
+      - SIGAA_DB_CONNECTION=pgsql
+      - SIGAA_DB_HOST=sigaa-db
+      - SIGAA_DB_PORT=5432
+      - SIGAA_DB_DATABASE=sigaa
+      - SIGAA_DB_USERNAME=sigaa
+      - SIGAA_DB_PASSWORD=sigaa
+      - SISTEMAS_COMUM_DB_CONNECTION=pgsql
+      - SISTEMAS_COMUM_DB_HOST=sigaa-db
+      - SISTEMAS_COMUM_DB_PORT=5432
+      - SISTEMAS_COMUM_DB_DATABASE=sigaa
+      - SISTEMAS_COMUM_DB_USERNAME=sigaa
+      - SISTEMAS_COMUM_DB_PASSWORD=sigaa
+
     volumes:
       - .:/var/www/html
+      - vendor:/var/www/html/vendor
     ports:
       - "8083:80"
     networks:
-      - shared-network-unidatahub
+      - unidatahub-network
+    entrypoint: >
+      bash -c "chown -R www-data:www-data storage bootstrap/cache
+      && chmod -R 775 storage bootstrap/cache
+      && apache2-foreground"
 
   db:
     image: mysql:8.0
@@ -30,7 +49,7 @@ services:
     volumes:
       - dbdata:/var/lib/mysql
     networks:
-      - shared-network-unidatahub
+      - unidatahub-network
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -44,56 +63,46 @@ services:
     ports:
       - "8081:80"
     networks:
-      - shared-network-unidatahub
+      - unidatahub-network
 
-  redis:
-    image: bitnami/redis:latest
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: unidatahub-pgadmin-dev
     restart: unless-stopped
-    container_name: unidatahub-redis
-    volumes:
-      - ./docker/redis:/bitnami/redis/data
-    networks:
-      - shared-network-unidatahub
     environment:
-      - ALLOW_EMPTY_PASSWORD=no
-      - REDIS_PASSWORD=root
-
-  worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: unidatahub.worker
-    restart: unless-stopped
-    volumes:
-      - .:/var/www/html
-    depends_on:
-      - redis
-      - db
-    networks:
-      - shared-network-unidatahub
-    command: "php artisan queue:work redis --tries=3 --verbose"
-
-  # For development and testing
-  mailpit:
-    image: axllent/mailpit:latest
-    container_name: unidatahub-mailpit
-    restart: unless-stopped
-    volumes:
-      - ./docker/mailplit:/data
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@unidatahub.unilab.edu.br}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin123}
+      PGADMIN_LISTEN_PORT: 80
     ports:
-      - 1025:1025
-      - 8025:8025
-    environment:
-      MP_MAX_MESSAGES: 5000
-      MP_DATABASE: /data/mailpit.db
-      MP_SMTP_AUTH_ACCEPT_ANY: 1
-      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      - "8084:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin-dev:/var/lib/pgadmin
     networks:
-      - shared-network-unidatahub
+      - unidatahub-network
+
+
+  sigaa-db:
+    image: postgres:15
+    container_name: unidatahub-sigaa-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: sigaa
+      POSTGRES_USER: sigaa
+      POSTGRES_PASSWORD: sigaa
+    volumes:
+      - sigaa-dbdata:/var/lib/postgresql/data
+    networks:
+      - unidatahub-network
 
 networks:
-  shared-network-unidatahub:
-    external: true
+  unidatahub-network:
 
 volumes:
   dbdata:
+  sigaa-dbdata:
+  pgadmin-dev:
+  vendor:

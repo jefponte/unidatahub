@@ -8,28 +8,31 @@ use Illuminate\Support\Facades\DB;
 class HealthController extends Controller
 {
     /**
-     * Health check: retorna status da API e do banco de dados.
+     * Health check: retorna status da API e dos bancos de dados.
      */
     public function __invoke(): JsonResponse
     {
-        $deps = [
-            'db' => 'connected',
-        ];
+        $connections = ['default', 'sigaa', 'sistemas_comum'];
 
-        // força uma operação simples para testar a conexão
-        try {
-            DB::connection()->getPdo();
-            DB::select('select 1');
-        } catch (\Exception $e) {
-            $deps['db'] = 'down';
+        $databases = [];
+
+        foreach ($connections as $name) {
+            $connection = $name === 'default' ? DB::connection() : DB::connection($name);
+            try {
+                $connection->getPdo();
+                $connection->select('select 1');
+                $databases[$name] = 'connected';
+            } catch (\Exception $e) {
+                $databases[$name] = 'down';
+            }
         }
 
-        $overall = collect($deps)->contains('down') ? 'down' : 'ok';
+        $overall = collect($databases)->contains('down') ? 'down' : 'ok';
 
         return response()->json([
-            'status' => $overall,
-            'timestamp'   => now()->toIso8601String(),
-            'database'   => $deps['db'],
+            'status'    => $overall,
+            'timestamp' => now()->toIso8601String(),
+            'databases' => $databases,
         ], $overall === 'ok' ? 200 : 503);
     }
 }

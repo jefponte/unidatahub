@@ -92,7 +92,7 @@ class AuthController extends Controller
         if ($hashedPassword !== $userData->senha) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
-        $user = User::on('local')->updateOrCreate(
+        $user = User::updateOrCreate(
             ['id' => $userData->id_usuario],
             [
                 'id' => $userData->id_usuario,

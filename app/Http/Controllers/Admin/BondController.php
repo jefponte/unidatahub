@@ -168,6 +168,7 @@ class BondController extends BasicCrudController
     protected function resource()
     {
         return BondResource::class;
+
     }
     public function queryBuilder(): \Illuminate\Database\Eloquent\Builder
     {
