@@ -72,7 +72,7 @@ configMapGenerator:
 
 images:
 - name: harbor.unilab.edu.br/unilab/unidatahub-api
-  newTag: stg-b8c5a8e2
+  newTag: stg-60a4a0b6
 
 labels:
 - pairs:
