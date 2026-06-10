@@ -59,11 +59,11 @@ data:
     wsrep_retry_autocommit = 3
     wsrep_provider_options = "gcache.size=512M;evs.suspect_timeout=PT5S;evs.inactive_timeout=PT15S;evs.install_timeout=PT5S;evs.send_window=512;evs.user_send_window=256"
 
+    [mariabackup]
+    user = _SST_USER
+    password = _SST_PASSWORD
+
     [mariadb]
     transaction-isolation = READ-COMMITTED
     default_storage_engine = InnoDB
     innodb_autoinc_lock_mode = 2
-
-    [mariabackup]
-    user = _SST_USER
-    password = _SST_PASSWORD
