@@ -8,6 +8,7 @@ resources:
 - namespace.yaml
 - sealed-secret-mariadb-credentials.yaml
 - sealed-secret-laravel-secrets.yaml
+- sealed-secret-ext-db.yaml
 
 patches:
 - path: patch-deployment.yaml
@@ -34,7 +35,7 @@ patches:
 configMapGenerator:
 - behavior: merge
   literals:
-  - APP_NAME=unidatahub - Staging
+  - APP_NAME=Unidatahub- Staging
   - APP_ENV=staging
   - APP_DEBUG=false
   - APP_URL=https://unidatahub-staging.unilab.edu.br
@@ -42,6 +43,19 @@ configMapGenerator:
   - MAIL_FROM_NAME=[Treinamento] Unidatahub - UNILAB
   - LOG_LEVEL=info
   - MESSAGE=Staging
+  - SIGAA_DB_CONNECTION=pgsql
+  - DB_USERNAME=unidatahub_stag_user
+  - SIGAA_DB_HOST=10.180.1.10
+  - SIGAA_DB_PORT=5432
+  - SIGAA_DB_DATABASE=sigaa
+  - SIGAA_DB_USERNAME=api_conn_sig
+  - SISTEMAS_COMUM_DB_CONNECTION=pgsql
+  - SISTEMAS_COMUM_DB_HOST=10.180.1.11
+  - SISTEMAS_COMUM_DB_PORT=5432
+  - SISTEMAS_COMUM_DB_DATABASE=sistemas_comum
+  - SISTEMAS_COMUM_DB_USERNAME=api_conn_sig
+  - SISTEMAS_COMUM_DB_CHARSET=UTF-8
+  - SISTEMAS_COMUM_DB_COLLATION=pt_BR.UTF-8
   name: unidatahub-api-config
   options:
     disableNameSuffixHash: true
@@ -65,4 +79,4 @@ labels:
     environment: staging
 
 commonAnnotations:
-  description: Ambiente de homologação - UnidataHub
+  description: Ambiente de homologação - unidatahub Api

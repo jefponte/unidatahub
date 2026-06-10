@@ -91,7 +91,7 @@ data:
     Backup Type: AUTOMATED (CronJob)
     Timestamp: $TIMESTAMP
     Pod: $HOSTNAME
-    Namespace: ${POD_NAMESPACE:-uniselec-api-dev}
+    Namespace: ${POD_NAMESPACE:-unidatahub-api-dev}
     Created: $(date)
 
     === CLUSTER STATUS ===
@@ -406,7 +406,7 @@ data:
     Backup Type: MANUAL (Interactive)
     Timestamp: $TIMESTAMP
     Pod: $HOSTNAME
-    Namespace: ${POD_NAMESPACE:-uniselec-api-dev}
+    Namespace: ${POD_NAMESPACE:-unidatahub-api-dev}
     Created: $(date)
 
     === CLUSTER STATUS ===
@@ -514,7 +514,7 @@ data:
     fi
 
     TIMESTAMP="$1"
-    NAMESPACE="${POD_NAMESPACE:-uniselec-api-dev}"
+    NAMESPACE="${POD_NAMESPACE:-unidatahub-api-dev}"
     MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-}"
 
     RED='\033[0;31m'

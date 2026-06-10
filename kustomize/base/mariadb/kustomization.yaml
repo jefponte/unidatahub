@@ -19,4 +19,4 @@ configMapGenerator:
       - MARIADB_GALERA_CLUSTER=ON
       - MARIADB_WSREP_PROVIDER=/usr/lib/galera/libgalera_smm.so
       - MARIADB_REPLICATION_USER=replicator
-      - MYSQL_USER=uniselec
+      - MYSQL_USER=unidatahub

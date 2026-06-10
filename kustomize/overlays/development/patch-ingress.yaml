@@ -1,16 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: uniselec-api
+  name: unidatahub-api
 spec:
   rules:
-    - host: uniselec-api-development.unilab.edu.br  # Host de development
+    - host: unidatahub-api-development.unilab.edu.br  # Host de development
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: uniselec-api
+                name: unidatahub-api
                 port:
                   number: 80

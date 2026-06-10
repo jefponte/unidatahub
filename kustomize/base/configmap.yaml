@@ -65,5 +65,4 @@ data:
   VITE_PUSHER_SCHEME: "${PUSHER_SCHEME}"
   VITE_PUSHER_APP_CLUSTER: "${PUSHER_APP_CLUSTER}"
 
-
   MESSAGE: Laravel Development Environment

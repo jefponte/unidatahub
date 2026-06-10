@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: uniselec-api
+  name: unidatahub-api
 spec:
   template:
     metadata:
@@ -9,7 +9,7 @@ spec:
         environment: development
     spec:
       containers:
-        - name: uniselec-api
+        - name: unidatahub-api
           resources:
             requests:
               cpu: 100m

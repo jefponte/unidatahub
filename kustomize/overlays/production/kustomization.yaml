@@ -8,6 +8,7 @@ resources:
 - namespace.yaml
 - sealed-secret-mariadb-credentials.yaml
 - sealed-secret-laravel-secrets.yaml
+- sealed-secret-ext-db.yaml
 
 patches:
 - path: patch-deployment.yaml
@@ -34,14 +35,27 @@ patches:
 configMapGenerator:
 - behavior: merge
   literals:
-  - APP_NAME=unidatahub
+  - APP_NAME=unidatahub Seleções
   - APP_ENV=production
   - APP_DEBUG=false
   - APP_URL=https://unidatahub.unilab.edu.br
   - MAIL_FROM_ADDRESS=noreply@unidatahub.unilab.edu.br
-  - MAIL_FROM_NAME=Unidatahub
+  - MAIL_FROM_NAME=UnidataHub
   - LOG_LEVEL=error
   - MESSAGE=Production
+  - SIGAA_DB_CONNECTION=pgsql
+  - DB_USERNAME=unidatahub_prod_user
+  - SIGAA_DB_HOST=10.180.1.10
+  - SIGAA_DB_PORT=5432
+  - SIGAA_DB_DATABASE=sigaa
+  - SIGAA_DB_USERNAME=api_conn_sig
+  - SISTEMAS_COMUM_DB_CONNECTION=pgsql
+  - SISTEMAS_COMUM_DB_HOST=10.180.1.11
+  - SISTEMAS_COMUM_DB_PORT=5432
+  - SISTEMAS_COMUM_DB_DATABASE=sistemas_comum
+  - SISTEMAS_COMUM_DB_USERNAME=api_conn_sig
+  - SISTEMAS_COMUM_DB_CHARSET=UTF-8
+  - SISTEMAS_COMUM_DB_COLLATION=pt_BR.UTF-8
   name: unidatahub-api-config
   options:
     disableNameSuffixHash: true
