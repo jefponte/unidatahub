@@ -28,6 +28,7 @@ services:
     volumes:
       - .:/var/www/html
       - vendor:/var/www/html/vendor
+      - storage:/var/www/html/storage
     ports:
       - "8083:80"
     networks:
@@ -88,7 +89,7 @@ services:
     container_name: unidatahub-sigaa-db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: sigaa
       POSTGRES_USER: sigaa
@@ -106,3 +107,4 @@ volumes:
   sigaa-dbdata:
   pgadmin-dev:
   vendor:
+  storage:
