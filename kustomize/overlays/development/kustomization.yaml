@@ -88,8 +88,8 @@ secretGenerator:
   options:
     disableNameSuffixHash: true
 - files:
-  - PASSPORT_PRIVATE_KEY=../../../storage/oauth-private.key
-  - PASSPORT_PUBLIC_KEY=../../../storage/oauth-public.key
+  - PASSPORT_PRIVATE_KEY=passport-private.key
+  - PASSPORT_PUBLIC_KEY=passport-public.key
   name: passport-keys
   options:
     disableNameSuffixHash: true
