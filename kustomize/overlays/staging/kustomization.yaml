@@ -31,6 +31,15 @@ patches:
   target:
     kind: Service
     name: mariadb-lb
+- target:
+    kind: Deployment
+    name: unidatahub-api
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/envFrom/-
+      value:
+        secretRef:
+          name: ext-db-secrets
 
 configMapGenerator:
 - behavior: merge

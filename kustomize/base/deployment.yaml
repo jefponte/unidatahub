@@ -98,8 +98,6 @@ spec:
               name: mariadb-secret-env
           - secretRef:
               name: laravel-secrets
-          - secretRef:
-              name: ext-db-secrets
         env:
         - name: TZ
           value: "America/Fortaleza"
