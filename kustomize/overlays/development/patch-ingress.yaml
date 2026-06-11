@@ -4,7 +4,7 @@ metadata:
   name: unidatahub-api
 spec:
   rules:
-    - host: unidatahub-api-development.unilab.edu.br  # Host de development
+    - host: unidatahub-development.unilab.edu.br  # Host de development
       http:
         paths:
           - path: /
