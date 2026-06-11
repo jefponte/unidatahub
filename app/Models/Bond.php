@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bond extends Model
 {
+    protected $connection = 'sigaa';
     use HasFactory, Filterable;
     protected $table = 'vw_usuarios_catraca';
 
