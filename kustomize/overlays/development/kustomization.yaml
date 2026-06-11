@@ -32,17 +32,28 @@ patches:
 configMapGenerator:
 - behavior: merge
   literals:
-  - APP_NAME=unidatahub/Seleções - Development
+  - APP_NAME=Unidatahub - Development
   - APP_ENV=development
   - APP_DEBUG=true
-  - APP_URL=https://unidatahub-api-development.unilab.edu.br
-  - FRONTEND_URL=https://selecoes-development.unilab.edu.br
-  - BACKOFFICE_URL=https://unidatahub-admin-development.unilab.edu.br
-  - MAIL_FROM_ADDRESS=noreply@selecoes-development.unilab.edu.br
-  - MAIL_FROM_NAME=[Development] Seleções - UNILAB
-  - WEB_APPLICATION_LINK=https://selecoes-development.unilab.edu.br
+  - APP_URL=https://unidatahub-development.unilab.edu.br
+  - MAIL_FROM_ADDRESS=noreply@unidatahub-development.unilab.edu.br
+  - MAIL_FROM_NAME=[Development] Unidatahub - UNILAB
   - LOG_LEVEL=debug
   - MESSAGE=Development
+  - SIGAA_DB_CONNECTION=mysql
+  - SIGAA_DB_HOST=mariadb-app.unidatahub-api-dev.svc.cluster.local
+  - SIGAA_DB_PORT=3306
+  - SIGAA_DB_DATABASE=unidatahub_dev
+  - SIGAA_DB_USERNAME=root
+  - SIGAA_DB_CHARSET=utf8mb4
+  - SIGAA_DB_COLLATION=utf8mb4_unicode_ci
+  - SISTEMAS_COMUM_DB_CONNECTION=mysql
+  - SISTEMAS_COMUM_DB_HOST=mariadb-app.unidatahub-api-dev.svc.cluster.local
+  - SISTEMAS_COMUM_DB_PORT=3306
+  - SISTEMAS_COMUM_DB_DATABASE=unidatahub_dev
+  - SISTEMAS_COMUM_DB_USERNAME=root
+  - SISTEMAS_COMUM_DB_CHARSET=utf8mb4
+  - SISTEMAS_COMUM_DB_COLLATION=utf8mb4_unicode_ci
   name: unidatahub-api-config
   options:
     disableNameSuffixHash: true
@@ -61,6 +72,8 @@ secretGenerator:
 - literals:
   - DB_USERNAME=root
   - DB_PASSWORD=Password123
+  - SIGAA_DB_PASSWORD=Password123
+  - SISTEMAS_COMUM_DB_PASSWORD=Password123
   - MYSQL_ROOT_PASSWORD=Password123
   - MYSQL_PASSWORD=Password123
   - SST_PASSWORD=Password123
