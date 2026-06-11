@@ -87,6 +87,12 @@ secretGenerator:
   name: laravel-secrets
   options:
     disableNameSuffixHash: true
+- files:
+  - PASSPORT_PRIVATE_KEY=../../../storage/oauth-private.key
+  - PASSPORT_PUBLIC_KEY=../../../storage/oauth-public.key
+  name: passport-keys
+  options:
+    disableNameSuffixHash: true
 
 images:
 - name: harbor.unilab.edu.br/unilab/unidatahub-api

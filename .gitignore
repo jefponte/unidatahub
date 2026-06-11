@@ -27,3 +27,8 @@ Homestead.yaml
 Thumbs.db
 .env.old
 passwords-*.txt
+
+# Arquivos locais sensíveis
+bash/tmp/
+storage/oauth-private.key
+storage/oauth-public.key
