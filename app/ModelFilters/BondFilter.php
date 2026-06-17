@@ -34,7 +34,7 @@ class BondFilter extends DefaultModelFilter
         if (env('DB_CONNECTION') === 'pgsql') {
             $this->where('login', 'LIKE', "$login");
         } else {
-            $this->whereRaw("LOWER(login) LIKE ?", ['%' . strtolower($login) . '%']);
+            $this->where('login', $login);
         }
     }
     public function id($id)
