@@ -107,3 +107,109 @@ The API will be available at [http://localhost](http://localhost).
 
 - Ensure Docker and Docker Compose are installed and up to date.
 - Review directory permissions if needed, especially for `storage` and `bootstrap/cache`.
+
+---
+
+## Kubernetes Deployment
+
+### Certificados Públicos do Sealed Secrets
+
+Os certificados de cada cluster estão em `bash/tmp/`:
+
+| Arquivo | Cluster | Ambiente |
+|---|---|---|
+| `sc-pub-cert-k8sc1-red.pem` | k8sc1-red | Staging |
+| `sc-pub-cert-k8sc2-for.pem` | k8sc2-for | Production |
+
+### Gerar Sealed Secrets — `ext-db-secrets` (SIGAA / Sistemas Comum)
+
+**Staging:**
+```bash
+kubectl create secret generic ext-db-secrets \
+  --from-literal=SIGAA_DB_PASSWORD='<senha>' \
+  --from-literal=SISTEMAS_COMUM_DB_PASSWORD='<senha>' \
+  --namespace=unidatahub-api-stg \
+  --dry-run=client -o yaml | \
+kubeseal --format=yaml --cert=bash/tmp/sc-pub-cert-k8sc1-red.pem \
+  > kustomize/overlays/staging/sealed-secret-ext-db.yaml
+```
+
+**Production:**
+```bash
+kubectl create secret generic ext-db-secrets \
+  --from-literal=SIGAA_DB_PASSWORD='<senha>' \
+  --from-literal=SISTEMAS_COMUM_DB_PASSWORD='<senha>' \
+  --namespace=unidatahub-api-prd \
+  --dry-run=client -o yaml | \
+kubeseal --format=yaml --cert=bash/tmp/sc-pub-cert-k8sc2-for.pem \
+  > kustomize/overlays/production/sealed-secret-ext-db.yaml
+```
+
+### Gerar Sealed Secrets — `laravel-secrets` (APP_KEY)
+
+**Staging:**
+```bash
+kubectl create secret generic laravel-secrets \
+  --from-literal=APP_KEY='base64:<chave>' \
+  --namespace=unidatahub-api-stg \
+  --dry-run=client -o yaml | \
+kubeseal --format=yaml --cert=bash/tmp/sc-pub-cert-k8sc1-red.pem \
+  > kustomize/overlays/staging/sealed-secret-laravel-secrets.yaml
+```
+
+**Production:**
+```bash
+kubectl create secret generic laravel-secrets \
+  --from-literal=APP_KEY='base64:<chave>' \
+  --namespace=unidatahub-api-prd \
+  --dry-run=client -o yaml | \
+kubeseal --format=yaml --cert=bash/tmp/sc-pub-cert-k8sc2-for.pem \
+  > kustomize/overlays/production/sealed-secret-laravel-secrets.yaml
+```
+
+### Gerar Sealed Secrets — `mariadb-secret-env`
+
+**Staging:**
+```bash
+kubectl create secret generic mariadb-secret-env \
+  --from-literal=DB_USERNAME='unidatahub_stag_user' \
+  --from-literal=DB_PASSWORD='<senha_app>' \
+  --from-literal=MYSQL_ROOT_PASSWORD='<senha_root>' \
+  --from-literal=MYSQL_PASSWORD='<senha_app>' \
+  --from-literal=SST_USER='sstuser' \
+  --from-literal=SST_PASSWORD='<senha_sst>' \
+  --from-literal=MARIADB_REPLICATION_PASSWORD='<senha_repl>' \
+  --namespace=unidatahub-api-stg \
+  --dry-run=client -o yaml | \
+kubeseal --format=yaml --cert=bash/tmp/sc-pub-cert-k8sc1-red.pem \
+  > kustomize/overlays/staging/sealed-secret-mariadb-credentials.yaml
+```
+
+**Production:**
+```bash
+kubectl create secret generic mariadb-secret-env \
+  --from-literal=DB_USERNAME='unidatahub_prod_user' \
+  --from-literal=DB_PASSWORD='<senha_app>' \
+  --from-literal=MYSQL_ROOT_PASSWORD='<senha_root>' \
+  --from-literal=MYSQL_PASSWORD='<senha_app>' \
+  --from-literal=SST_USER='sstuser' \
+  --from-literal=SST_PASSWORD='<senha_sst>' \
+  --from-literal=MARIADB_REPLICATION_PASSWORD='<senha_repl>' \
+  --namespace=unidatahub-api-prd \
+  --dry-run=client -o yaml | \
+kubeseal --format=yaml --cert=bash/tmp/sc-pub-cert-k8sc2-for.pem \
+  > kustomize/overlays/production/sealed-secret-mariadb-credentials.yaml
+```
+
+> As senhas geradas são salvas em `passwords-mariadb-staging.txt` e `passwords-mariadb-production.txt` (não commitar).
+
+### Aplicar no cluster
+
+```bash
+# Staging
+kubectl apply -k kustomize/overlays/staging
+
+# Production
+kubectl apply -k kustomize/overlays/production
+```
+
