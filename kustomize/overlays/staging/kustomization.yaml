@@ -51,7 +51,7 @@ configMapGenerator:
   - APP_URL=https://unidatahub-staging.unilab.edu.br
   - MAIL_FROM_ADDRESS=noreply@unidatahub-staging.unilab.edu.br
   - MAIL_FROM_NAME=[Treinamento] Unidatahub - UNILAB
-  - LOG_LEVEL=info
+  - LOG_LEVEL=error
   - MESSAGE=Staging
   - SIGAA_DB_CONNECTION=pgsql
   - DB_USERNAME=unidatahub_stag_user
