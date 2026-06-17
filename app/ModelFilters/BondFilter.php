@@ -31,10 +31,12 @@ class BondFilter extends DefaultModelFilter
     }
     public function login($login)
     {
+        $login = trim($login);
+
         if (env('DB_CONNECTION') === 'pgsql') {
-            $this->where('login', 'LIKE', "$login");
+            $this->whereRaw('LOWER(login) = ?', [strtolower($login)]);
         } else {
-            $this->where('login', $login);
+            $this->whereRaw('LOWER(login) = ?', [strtolower($login)]);
         }
     }
     public function id($id)
