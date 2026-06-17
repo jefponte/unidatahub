@@ -28,8 +28,6 @@ class BondController extends BasicCrudController
             $query = $query->filter($request->all());
         }
 
-        $query->whereNotNull('created_at');
-
         $data = $request->has('all') || ! $this->defaultPerPage
             ? $query->get()
             : $query->paginate($perPage);
