@@ -6,6 +6,9 @@ namespace: unidatahub-api-dev
 resources:
 - ../../base
 - namespace.yaml
+- sealed-secret-mariadb-credentials.yaml
+- sealed-secret-laravel-secrets.yaml
+- sealed-secret-ext-db.yaml
 
 patches:
 - path: patch-deployment.yaml
@@ -28,6 +31,15 @@ patches:
   target:
     kind: Service
     name: mariadb-lb
+- target:
+    kind: Deployment
+    name: unidatahub-api
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/envFrom/-
+      value:
+        secretRef:
+          name: ext-db-secrets
 
 configMapGenerator:
 - behavior: merge
@@ -41,19 +53,17 @@ configMapGenerator:
   - LOG_LEVEL=debug
   - MESSAGE=Development
   - SIGAA_DB_CONNECTION=pgsql
-  - SIGAA_DB_HOST=postgres.postgres-catraca-dev.svc.cluster.local
+  - SIGAA_DB_HOST=10.180.6.11
   - SIGAA_DB_PORT=5432
-  - SIGAA_DB_DATABASE=catraca_dev
-  - SIGAA_DB_USERNAME=catraca_dev
-  - SIGAA_DB_PASSWORD=Password123
-  - SIGAA_DB_SEARCH_PATH=public
+  - SIGAA_DB_DATABASE=sigaa
+  - SIGAA_DB_USERNAME=sigaa
   - SISTEMAS_COMUM_DB_CONNECTION=pgsql
-  - SISTEMAS_COMUM_DB_HOST=postgres.postgres-catraca-dev.svc.cluster.local
+  - SISTEMAS_COMUM_DB_HOST=10.180.6.11
   - SISTEMAS_COMUM_DB_PORT=5432
-  - SISTEMAS_COMUM_DB_DATABASE=catraca_dev
-  - SISTEMAS_COMUM_DB_USERNAME=catraca_dev
-  - SISTEMAS_COMUM_DB_PASSWORD=Password123
-  - SISTEMAS_COMUM_DB_SEARCH_PATH=public
+  - SISTEMAS_COMUM_DB_DATABASE=sistemas_comum
+  - SISTEMAS_COMUM_DB_USERNAME=sistemas_comum
+  - SISTEMAS_COMUM_DB_CHARSET=UTF-8
+  - SISTEMAS_COMUM_DB_COLLATION=pt_BR.UTF-8
   name: unidatahub-api-config
   options:
     disableNameSuffixHash: true
@@ -69,22 +79,6 @@ configMapGenerator:
     disableNameSuffixHash: true
 
 secretGenerator:
-- literals:
-  - DB_USERNAME=root
-  - DB_PASSWORD=Password123
-  - MYSQL_ROOT_PASSWORD=Password123
-  - MYSQL_PASSWORD=Password123
-  - SST_PASSWORD=Password123
-  - SST_USER=sstuser
-  - MARIADB_REPLICATION_PASSWORD=Password123
-  name: mariadb-secret-env
-  options:
-    disableNameSuffixHash: true
-- literals:
-  - APP_KEY=base64:K10kGMbwmuMCIciRc3hjsSr/dQDWSIN1mEFOQ0aVA2M=
-  name: laravel-secrets
-  options:
-    disableNameSuffixHash: true
 - files:
   - PASSPORT_PRIVATE_KEY=passport-private.key
   - PASSPORT_PUBLIC_KEY=passport-public.key
