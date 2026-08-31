@@ -1,4 +1,4 @@
-# Unidatahub - Down
+# Unidatahub
 
 This project is a Laravel-based API serving as a template for new projects with common functionalities.
 
@@ -120,6 +120,74 @@ Os certificados de cada cluster estão em `bash/tmp/`:
 |---|---|---|
 | `sc-pub-cert-k8sc1-red.pem` | k8sc1-red | Staging |
 | `sc-pub-cert-k8sc2-for.pem` | k8sc2-for | Production |
+
+Para development, obtenha no bastion o certificado público do cluster em que o
+namespace `unidatahub-api-dev` está hospedado. O certificado não contém a chave
+privada. No bastion, confirme primeiro o contexto e o namespace:
+
+```bash
+kubectl config current-context
+kubectl get namespace unidatahub-api-dev
+
+kubeseal --fetch-cert \
+  --controller-name=sealed-secrets-controller \
+  --controller-namespace=kube-system \
+  > /tmp/sc-pub-cert-development.pem
+```
+
+Na máquina local, a partir da raiz deste repositório, copie somente o certificado
+público (substitua `<bastion>` pelo host configurado no SSH):
+
+```bash
+scp <bastion>:/tmp/sc-pub-cert-development.pem \
+  bash/tmp/sc-pub-cert-development.pem
+
+openssl x509 -in bash/tmp/sc-pub-cert-development.pem \
+  -noout -subject -issuer -dates
+```
+
+Não reutilize automaticamente o certificado de staging ou production. Ele só é
+válido para development quando os ambientes usam o mesmo controller Sealed
+Secrets no mesmo cluster.
+
+### Gerar Sealed Secrets de development
+
+Os scripts abaixo geram os manifests diretamente em
+`kustomize/overlays/development/`. Informe sempre o certificado do cluster de
+development; um secret selado para outro cluster não poderá ser descriptografado.
+
+```bash
+# MariaDB e APP_KEY do Laravel
+./bash/create-sealed-secrets-development.sh \
+  bash/tmp/sc-pub-cert-development.pem
+
+# Bancos externos (SIGAA e Sistemas Comum)
+./bash/create-sealed-secrets-ext-db-development.sh \
+  bash/tmp/sc-pub-cert-development.pem
+```
+
+Depois da primeira geração, migre
+`kustomize/overlays/development/kustomization.yaml` como já é feito em staging:
+
+1. Adicione os três arquivos `sealed-secret-*.yaml` à seção `resources`.
+2. Remova de `secretGenerator` as entradas `mariadb-secret-env` e
+  `laravel-secrets` (mantenha `passport-keys`).
+3. Remova `SIGAA_DB_PASSWORD` e `SISTEMAS_COMUM_DB_PASSWORD` do
+  `configMapGenerator`.
+4. Adicione a `ext-db-secrets` ao `envFrom` do Deployment, usando o mesmo patch
+  presente no overlay de staging.
+5. Valide com:
+
+```bash
+kubectl kustomize kustomize/overlays/development > /dev/null
+```
+
+Pressionar Enter em uma senha gera um valor aleatório. Os valores originais são
+gravados em `passwords-*-development.txt`, com permissão `600` e já cobertos pelo
+`.gitignore`. Guarde-os em um cofre de senhas e remova as cópias locais quando não
+forem mais necessárias. Os YAMLs `sealed-secret-*.yaml` gerados devem ser
+commitados para que a pipeline/Argo CD aplique a alteração; não aplique mudanças
+manualmente no cluster de deployment.
 
 ### Gerar Sealed Secrets — `ext-db-secrets` (SIGAA / Sistemas Comum)
 
