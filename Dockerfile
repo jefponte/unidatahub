@@ -1,4 +1,4 @@
-FROM php:8.3-apache as dev
+FROM php:8.3.36-apache AS dev
 
 ENV APP_ENV=dev
 ENV APP_DEBUG=true
